@@ -34,6 +34,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost","127.0.0.1","erico-putra-footballnews.pbp.cs.ui.ac.id"]
 
+# Add deployment URL to CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [
+    "https://erico-putra-footballnews.pbp.cs.ui.ac.id/"
+]
 
 # Application definition
 
@@ -62,7 +66,7 @@ ROOT_URLCONF = 'football_news.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
