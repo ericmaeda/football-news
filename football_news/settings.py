@@ -36,7 +36,7 @@ ALLOWED_HOSTS = ["localhost","127.0.0.1","erico-putra-footballnews.pbp.cs.ui.ac.
 
 # Add deployment URL to CSRF_TRUSTED_ORIGINS
 CSRF_TRUSTED_ORIGINS = [
-    "https://erico-putra-footballnews.pbp.cs.ui.ac.id/"
+    "https://erico-putra-footballnews.pbp.cs.ui.ac.id",
 ]
 
 # Application definition
