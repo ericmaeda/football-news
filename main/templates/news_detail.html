@@ -22,6 +22,12 @@
 
     <p>{{ news.content }}</p>
 
+    {% if news.user %}
+        <p>Author: {{ news.user.username }}</p>
+    {% else %}
+        <p>Author: Anonymous</p>
+    {% endif %}
+
     {% endblock content %}
 
 </body>
