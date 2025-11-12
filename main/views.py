@@ -10,8 +10,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.html import strip_tags
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from main.forms import NewsForm
-from main.models import News
+from main.forms import NewsForm, CarForm
+from main.models import News, Author, Book
 
 
 @login_required(login_url='/login')
@@ -34,6 +34,24 @@ def show_main(request):
 
     return render(request, "main.html", context)
 
+def show_author(request, author_name) :
+    author = get_object_or_404(Author, name=author_name)
+    books = author.books.all()
+    context = {
+        'author': author,
+        'books': books
+    }
+    return render(request, 'author_detail.html', context)
+
+def show_book(request, book_id) :
+    book = get_object_or_404(Book, pk=book_id)
+    authors = book.authors.all()
+    context = {
+        'book': book,
+        'authors': authors
+    }
+    return render(request, 'book_detail.html', context)
+
 def create_news(request):
     form = NewsForm(request.POST or None)
 
@@ -45,6 +63,18 @@ def create_news(request):
 
     context = {'form': form}
     return render(request, 'create_news.html', context)
+
+def add_car(request) :
+    form = CarForm(request.POST or None)
+
+    if form.is_valid() and request.method == 'POST' :
+        car_entry = form.save(commit=False)
+        car_entry.user = request.user
+        car_entry.save()
+        return redirect('main:show_main')
+    
+    context = {'form':form}
+    return render(request, 'create_car.html', context)
 
 @login_required(login_url='/login')
 def show_news(request, id):

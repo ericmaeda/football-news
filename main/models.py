@@ -34,3 +34,26 @@ class News(models.Model):
     def increment_views(self):
         self.news_views += 1
         self.save()
+
+class Car(models.Model) :
+    name = models.CharField()
+    brand = models.CharField()
+    stock = models.IntegerField()
+
+class Book(models.Model) :
+
+    authors = models.ManyToManyField('Author', related_name='books')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.title
+    
+class Author(models.Model) :
+
+    books = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='author_books', null=True)
+    name = models.CharField(max_length=255)
+    bio = models.TextField()
+
+    def __str__(self):  
+        return self.name
