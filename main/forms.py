@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django.utils.html import strip_tags
-from main.models import News, Car, Author, Book
+from main.models import News, Car
 
 class NewsForm(ModelForm):
     class Meta:
@@ -19,13 +19,3 @@ class CarForm(ModelForm) :
     class Meta :
         model = Car
         fields = ["name", "brand", "stock"]
-
-class BookForm(ModelForm) :
-    class Meta :
-        model = Book
-        fields = ["title", "description", "authors"]
-
-class AuthorForm(ModelForm) :
-    class Meta :
-        model = Author
-        fields = ["name", "bio", "books"]

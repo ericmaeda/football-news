@@ -1,4 +1,4 @@
-import datetime
+import datetime, requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
@@ -11,7 +11,11 @@ from django.utils.html import strip_tags
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from main.forms import NewsForm, CarForm
-from main.models import News, Author, Book
+from main.models import News
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.html import strip_tags
+import json
+from django.http import JsonResponse
 
 
 @login_required(login_url='/login')
@@ -34,23 +38,6 @@ def show_main(request):
 
     return render(request, "main.html", context)
 
-def show_author(request, author_name) :
-    author = get_object_or_404(Author, name=author_name)
-    books = author.books.all()
-    context = {
-        'author': author,
-        'books': books
-    }
-    return render(request, 'author_detail.html', context)
-
-def show_book(request, book_id) :
-    book = get_object_or_404(Book, pk=book_id)
-    authors = book.authors.all()
-    context = {
-        'book': book,
-        'authors': authors
-    }
-    return render(request, 'book_detail.html', context)
 
 def create_news(request):
     form = NewsForm(request.POST or None)
@@ -219,3 +206,47 @@ def add_news_entry_ajax(request):
 def add_news_entry_ajax(request):
     title = strip_tags(request.POST.get("title")) # strip HTML tags!
     content = strip_tags(request.POST.get("content")) # strip HTML tags!
+
+def proxy_image(request):
+    image_url = request.GET.get('url')
+    if not image_url:
+        return HttpResponse('No URL provided', status=400)
+    
+    try:
+        # Fetch image from external source
+        response = requests.get(image_url, timeout=10)
+        response.raise_for_status()
+        
+        # Return the image with proper content type
+        return HttpResponse(
+            response.content,
+            content_type=response.headers.get('Content-Type', 'image/jpeg')
+        )
+    except requests.RequestException as e:
+        return HttpResponse(f'Error fetching image: {str(e)}', status=500)
+
+
+@csrf_exempt
+def create_news_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        title = strip_tags(data.get("title", ""))  # Strip HTML tags
+        content = strip_tags(data.get("content", ""))  # Strip HTML tags
+        category = data.get("category", "")
+        thumbnail = data.get("thumbnail", "")
+        is_featured = data.get("is_featured", False)
+        user = request.user
+        
+        new_news = News(
+            title=title, 
+            content=content,
+            category=category,
+            thumbnail=thumbnail,
+            is_featured=is_featured,
+            user=user
+        )
+        new_news.save()
+        
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)

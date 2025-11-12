@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views import show_main, create_news, show_news, show_json, show_json_by_id, show_xml, show_xml_by_id, register, login_user, logout_user, edit_news, delete_news, add_news_entry_ajax, add_car, show_author, show_book
+from main.views import show_main, create_news, show_news, show_json, show_json_by_id, show_xml, show_xml_by_id, register, login_user, logout_user, edit_news, delete_news, add_news_entry_ajax, add_car, proxy_image, create_news_flutter
 
 app_name = 'main'
 
@@ -18,6 +18,6 @@ urlpatterns = [
     path('news/<uuid:id>/delete', delete_news, name='delete_news'),
     path('create-news-ajax/', add_news_entry_ajax, name='add_news_entry_ajax'),
     path('add-new-car/', add_car, name='add_car'),
-    path('author/<str:author_name>/', show_author, name='show_author'),
-    path('book/<int:book_id>/', show_book, name='show_book'),
+    path('proxy-image/', proxy_image, name='proxy_image'),
+    path('create-flutter/', create_news_flutter, name='create_news_flutter'),
 ]
